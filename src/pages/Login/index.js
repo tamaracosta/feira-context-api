@@ -28,7 +28,7 @@ function Login() {
         <Input
           type="text"
           value={nome}
-          onChange={(e) => setNome(e.target.value)}
+          onChange={(e) => setNome(e.target.value)}          
         />
       </InputContainer>
       <InputContainer>
@@ -50,6 +50,7 @@ function Login() {
         variant="contained"
         color="primary"
         onClick={() => history.push('/feira')}
+        disabled={nome.length < 4}
       >
         Avançar
       </Button>
