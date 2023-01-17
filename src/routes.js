@@ -1,4 +1,5 @@
 import { CarrinhoProvider } from "commom/context/Carrinho";
+import { PagamentoProvider } from "commom/context/Pagamento";
 import { UsuarioProvider } from "commom/context/Usuario";
 import Carrinho from "pages/Carrinho";
 import Feira from "pages/Feira";
@@ -19,9 +20,11 @@ return(
         <Route exact path="/feira">      
           <Feira />      
         </Route>
-        <Route exact path="/carrinho">
-          <Carrinho />
-        </Route>
+        <PagamentoProvider>
+          <Route exact path="/carrinho">
+            <Carrinho />
+          </Route>
+        </PagamentoProvider>
       </CarrinhoProvider>
     </UsuarioProvider>
 
