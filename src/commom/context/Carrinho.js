@@ -1,19 +1,31 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const CarrinhoContext = createContext();
 CarrinhoContext.displayName = "Carrinho";
 
 export const CarrinhoProvider = ({children}) => {
   const [carrinho, setCarrinho] = useState([]);
+  const [quantidadeProdutos, setQuantidadeProdutos] = useState(0);
   return (
-    <CarrinhoContext.Provider value={{carrinho, setCarrinho}}>
+    <CarrinhoContext.Provider 
+      value={{
+        carrinho, 
+        setCarrinho,
+        quantidadeProdutos,
+        setQuantidadeProdutos
+      }}>
       {children}
     </CarrinhoContext.Provider>
   )
 }
 
 export const useCarrinhoContext = () => {
-  const {carrinho, setCarrinho} = useContext(CarrinhoContext)
+  const {
+    carrinho, 
+    setCarrinho,
+    quantidadeProdutos,
+    setQuantidadeProdutos
+  } = useContext(CarrinhoContext)  
 
   const mudarQuantidade = (id, quantidade) => {
     return carrinho.map(itemDoCarrinho =>  {
@@ -21,7 +33,7 @@ export const useCarrinhoContext = () => {
       return itemDoCarrinho;
     })    
   }
-
+ 
   const adicionarProduto = (novoProduto) => {
     const temOProduto = carrinho.some(itemDoCarrinho => itemDoCarrinho.id === novoProduto.id)
     if(!temOProduto){
@@ -35,11 +47,23 @@ export const useCarrinhoContext = () => {
     const produto = carrinho.find(itemDoCarrinho => itemDoCarrinho.id === id)
     const ehOUltimo = produto.quantidade === 1;
     if(ehOUltimo){
-      setCarrinho(carrinhoAnterior => carrinhoAnterior.filter(itemDoCarrinho =>
+      return setCarrinho(carrinhoAnterior => carrinhoAnterior.filter(itemDoCarrinho =>
         itemDoCarrinho.id !== id))
     }
     setCarrinho(mudarQuantidade(id,-1))   
   }
 
-  return {carrinho, setCarrinho, adicionarProduto, removerProduto}
+  useEffect(() =>{
+    const novaQuantidade = carrinho.reduce((contador, produto) => 
+      contador + produto.quantidade, 0);
+      setQuantidadeProdutos(novaQuantidade)  
+  }, [carrinho, setQuantidadeProdutos])
+
+  return {
+    carrinho, 
+    setCarrinho, 
+    adicionarProduto, 
+    removerProduto,
+    quantidadeProdutos
+  }
 }
